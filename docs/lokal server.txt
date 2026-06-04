@@ -1,0 +1,24 @@
+
+Berikut adalah informasi dan URL lokal dev server Anda:
+
+### 1. Daftar URL Terkait:
+* **Frontend React/Vite**: [http://localhost:5174](http://localhost:5174)
+* **Backend Proxy**: [http://localhost:3000](http://localhost:3000)
+* **Health Check Backend**: [http://localhost:3000/api/health](http://localhost:3000/api/health)
+
+### 2. Status Output Terminal:
+* **Status `npm run dev:all`**: Berjalan lancar tanpa error (`RUNNING`).
+* **Terminal Frontend (Vite)**:
+  ```text
+  VITE v5.4.21  ready in 396 ms
+  ➜  Local:   http://localhost:5174/
+  ```
+* **Terminal Backend (Express)**:
+  ```text
+  ◇ injected env (3) from server\.env
+  =============================================
+   MASJAVAS AI API Gateway proxy running       
+   Port: 3000                        
+   Base API Url: http://localhost:3000 
+  =============================================
+  ```

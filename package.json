@@ -1,0 +1,102 @@
+{
+  "name": "masjavas-film-v5",
+  "version": "1.0.0",
+  "description": "MASJAVAS Film V5 — desktop AI cinematic video production (React + Electron + Express)",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/masjavas7/masjavas-film-v5.git"
+  },
+  "license": "MIT",
+  "main": "desktop/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "server": "node server/index.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
+    "desktop:dev": "concurrently \"npm run server\" \"npm run dev\" \"wait-on http://localhost:5174 http://localhost:3000/api/health && cross-env MASJAVAS_DESKTOP=true electron desktop/main.js\"",
+    "desktop:build": "npm run build && electron-builder",
+    "desktop:pack": "npm run build && electron-builder --dir"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "get-port": "^7.2.0",
+    "lucide-react": "^0.395.0",
+    "multer": "^2.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1",
+    "tailwind-merge": "^2.3.0",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^10.0.0",
+    "cross-env": "^10.1.0",
+    "electron": "^42.3.0",
+    "electron-builder": "^26.8.1",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.11",
+    "wait-on": "^9.0.10"
+  },
+  "build": {
+    "appId": "com.masjavas.ai",
+    "productName": "MASJAVAS AI",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop/**/*",
+      "server/**/*",
+      "!server/.env",
+      "!server/config.json",
+      "!server/logs/**/*",
+      "!server/temp/**/*",
+      "!server/exports/**/*",
+      "!server/uploads/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/ffmpeg/win32",
+        "to": "ffmpeg/win32"
+      },
+      {
+        "from": "resources/icon.ico",
+        "to": "icon.ico"
+      },
+      {
+        "from": "resources/branding",
+        "to": "branding"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "resources/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MASJAVAS AI",
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico",
+      "installerHeaderIcon": "resources/icon.ico"
+    }
+  }
+}

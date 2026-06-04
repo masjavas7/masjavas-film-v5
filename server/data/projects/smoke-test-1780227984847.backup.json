@@ -1,0 +1,50 @@
+{
+  "id": "smoke-test-1780227984847",
+  "title": "FFmpeg Smoke Test Project",
+  "topic": "Uji sistem export",
+  "status": "draft",
+  "createdAt": "2026-05-31T11:46:24.863Z",
+  "updatedAt": "2026-05-31T11:46:24.930Z",
+  "lastOpenedAt": "2026-05-31T11:46:24.863Z",
+  "settings": {
+    "aspectRatio": "16:9",
+    "orientation": "landscape",
+    "resolutionPreset": "1920x1080",
+    "tone": "Sinematik",
+    "style": "Sinematik",
+    "platform": "YouTube 16:9",
+    "totalScenes": 6,
+    "durationPerSceneSec": 10
+  },
+  "story": {
+    "ideaText": "Uji sistem export",
+    "storyDraft": null,
+    "narration": "",
+    "opener": "",
+    "core": "",
+    "ending": "",
+    "projectContentHash": ""
+  },
+  "references": [],
+  "manualReferences": [],
+  "scenes": [],
+  "exportResult": null,
+  "exportJobs": [
+    {
+      "jobId": "exp-1780227984868-kaz8k",
+      "projectId": "smoke-test-1780227984847",
+      "status": "processing",
+      "progress": 85,
+      "currentStep": "packaging",
+      "stepDetails": "Membuat manifest dan paket ZIP...",
+      "errorDetails": null,
+      "mp4Url": null,
+      "subtitleUrl": null,
+      "packageZipUrl": null,
+      "manifestUrl": null,
+      "createdAt": "2026-05-31T11:46:24.868Z",
+      "completedAt": null,
+      "cancelRequested": false
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "project-qa-export-lock",
+  "title": "Project QA Export Lock",
+  "topic": "Borobudur Temple Legend",
+  "status": "draft",
+  "createdAt": "2026-05-31T10:38:26.407Z",
+  "updatedAt": "2026-05-31T10:38:26.423Z",
+  "lastOpenedAt": "2026-05-31T10:38:26.407Z",
+  "settings": {
+    "aspectRatio": "9:16",
+    "orientation": "vertical",
+    "resolutionPreset": "1080x1920",
+    "durationPerSceneSec": 10
+  },
+  "story": {
+    "ideaText": "Borobudur Temple Legend",
+    "storyDraft": null,
+    "narration": "",
+    "opener": "",
+    "core": "",
+    "ending": "",
+    "projectContentHash": ""
+  },
+  "references": [],
+  "manualReferences": [],
+  "scenes": [
+    {
+      "id": "scene-qa-export-1",
+      "sceneNumber": 1,
+      "title": "Candi Terakhir",
+      "narration": "Malam semakin larut dan sunyi, Karsa memandang obor yang menyala dengan sangat tenang di pelataran candi.",
+      "aspectRatio": "16:9",
+      "videoSettings": {
+        "aspectRatio": "16:9 Widescreen",
+        "duration": 10,
+        "quality": "Tinggi"
+      },
+      "storyboardPanels": [],
+      "references": [],
+      "isGenerated": true,
+      "status": "Disetujui"
+    }
+  ],
+  "exportResult": null
+}

@@ -1,0 +1,28 @@
+{
+  "id": "project-qa-ratios",
+  "title": "Project QA Ratios",
+  "topic": "Kisah Candi Prambanan",
+  "status": "draft",
+  "createdAt": "2026-05-31T10:37:30.236Z",
+  "updatedAt": "2026-05-31T10:37:30.239Z",
+  "lastOpenedAt": "2026-05-31T10:37:30.236Z",
+  "settings": {
+    "aspectRatio": "16:9",
+    "orientation": "landscape",
+    "resolutionPreset": "1920x1080",
+    "durationPerSceneSec": 10
+  },
+  "story": {
+    "ideaText": "Kisah Candi Prambanan",
+    "storyDraft": null,
+    "narration": "",
+    "opener": "",
+    "core": "",
+    "ending": "",
+    "projectContentHash": ""
+  },
+  "references": [],
+  "manualReferences": [],
+  "scenes": [],
+  "exportResult": null
+}

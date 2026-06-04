@@ -1,0 +1,51 @@
+{
+  "id": "proj-test-1780212079387",
+  "title": "Proyek Roro Jonggrang Ultimate",
+  "topic": "Kisah legenda Bandung Bondowoso membangun seribu candi...",
+  "status": "in_progress",
+  "createdAt": "2026-05-31T07:21:19.450Z",
+  "updatedAt": "2026-05-31T10:19:11.392Z",
+  "lastOpenedAt": "2026-05-31T10:19:10.170Z",
+  "settings": {
+    "aspectRatio": "16:9",
+    "orientation": "landscape",
+    "resolutionPreset": "1920x1080",
+    "tone": "Sinematik",
+    "style": "Sinematik",
+    "totalScenes": 1,
+    "durationPerSceneSec": 10
+  },
+  "story": {
+    "ideaText": "Kisah legenda Bandung Bondowoso membangun seribu candi...",
+    "narration": "",
+    "opener": "",
+    "core": "",
+    "ending": "",
+    "projectContentHash": ""
+  },
+  "references": [],
+  "manualReferences": [],
+  "scenes": [
+    {
+      "id": "scene-test-1",
+      "sceneNumber": 1,
+      "title": "Kemarahan Bandung",
+      "status": "Siap dicek"
+    }
+  ],
+  "exportResult": null,
+  "projectName": "Proyek Roro Jonggrang Ultimate",
+  "ideaText": "Kisah legenda Bandung Bondowoso membangun seribu candi...",
+  "aspectRatio": "16:9",
+  "aspectRatioIndex": 4,
+  "selectedPreset": null,
+  "durationPresetIndex": 0,
+  "tonePresetIndex": 0,
+  "orientation": "landscape",
+  "resolutionPreset": "1920x1080",
+  "narration": "",
+  "opener": "",
+  "core": "",
+  "ending": "",
+  "projectContentHash": ""
+}

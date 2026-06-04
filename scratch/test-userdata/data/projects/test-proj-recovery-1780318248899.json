@@ -1,0 +1,127 @@
+{
+  "id": "test-proj-recovery-1780318248899",
+  "title": "Project Recovery Test",
+  "topic": "",
+  "status": "draft",
+  "createdAt": "2026-06-01T12:50:48.967Z",
+  "updatedAt": "2026-06-01T12:50:49.026Z",
+  "lastOpenedAt": "2026-06-01T12:50:48.967Z",
+  "settings": {
+    "aspectRatio": "16:9",
+    "orientation": "landscape",
+    "resolutionPreset": "1920x1080",
+    "tone": "Sinematik",
+    "style": "Sinematik",
+    "platform": "YouTube 16:9",
+    "totalScenes": 6,
+    "durationPerSceneSec": 10
+  },
+  "story": {
+    "ideaText": "",
+    "storyDraft": null,
+    "narration": "",
+    "opener": "",
+    "core": "",
+    "ending": "",
+    "projectContentHash": ""
+  },
+  "references": [],
+  "manualReferences": [],
+  "scenes": [
+    {
+      "id": "scene-1",
+      "sceneNumber": 1,
+      "title": "Adegan 1",
+      "narration": "Narasi pertama yang aman.",
+      "narrationText": "Narasi pertama yang aman.",
+      "status": "pending_audio",
+      "checklist": {
+        "ttsAudioReady": true,
+        "audioTimingReady": true
+      },
+      "ttsNarration": {
+        "provider": "gemini",
+        "model": "gemini-2.5-flash-preview-tts",
+        "voiceName": "Charon",
+        "fittedText": "Narasi pertama yang aman.",
+        "actualAudioDurationSec": 5,
+        "audioPath": "./scratch/dummy.mp3",
+        "audioUrl": "http://dummy.mp3",
+        "cutoffDetected": false,
+        "message": null,
+        "fitStatus": "pending"
+      },
+      "audioArtifact": {
+        "status": "pending_audio",
+        "sceneId": "scene-1",
+        "order": 1,
+        "title": "Adegan 1",
+        "narrationText": "Narasi pertama yang aman.",
+        "fittedText": "Narasi pertama yang aman.",
+        "targetDurationSec": 10,
+        "estimatedDurationSec": 1.74,
+        "wordCount": 4,
+        "charCount": 25,
+        "voiceName": "Charon",
+        "voiceStatus": "locked",
+        "audioUrl": "http://dummy.mp3",
+        "audioPath": "./scratch/dummy.mp3",
+        "actualDurationSec": 5,
+        "generationMode": "real",
+        "retryCount": 0,
+        "lastError": null,
+        "createdAt": "2026-06-01T12:50:49.008Z",
+        "updatedAt": "2026-06-01T12:50:49.008Z"
+      }
+    },
+    {
+      "id": "scene-2",
+      "sceneNumber": 2,
+      "title": "Adegan 2",
+      "narration": "Narasi kedua yang gagal.",
+      "narrationText": "Narasi kedua yang gagal.",
+      "status": "pending_audio",
+      "checklist": {
+        "ttsAudioReady": false,
+        "audioTimingReady": false
+      },
+      "ttsNarration": {
+        "provider": "gemini",
+        "model": "gemini-2.5-flash-preview-tts",
+        "voiceName": "Charon",
+        "fittedText": "Narasi kedua yang gagal.",
+        "actualAudioDurationSec": 0,
+        "audioPath": "dummy2.mp3",
+        "audioUrl": "http://dummy2.mp3",
+        "cutoffDetected": false,
+        "message": "File audio tidak terbentuk."
+      },
+      "audioArtifact": {
+        "status": "pending_audio",
+        "sceneId": "scene-2",
+        "order": 2,
+        "title": "Adegan 2",
+        "narrationText": "Narasi kedua yang gagal.",
+        "fittedText": "Narasi kedua yang gagal.",
+        "targetDurationSec": 10,
+        "estimatedDurationSec": 1.74,
+        "wordCount": 4,
+        "charCount": 24,
+        "voiceName": "Charon",
+        "voiceStatus": "locked",
+        "audioUrl": null,
+        "audioPath": null,
+        "actualDurationSec": 0,
+        "generationMode": "not_generated",
+        "retryCount": 0,
+        "lastError": "File audio tidak terbentuk.",
+        "createdAt": "2026-06-01T12:50:49.008Z",
+        "updatedAt": "2026-06-01T12:50:49.008Z"
+      }
+    }
+  ],
+  "exportResult": null,
+  "ttsSettings": {
+    "voiceName": "Charon"
+  }
+}
