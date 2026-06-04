@@ -21,7 +21,16 @@ SERVE_STATIC=true NODE_ENV=production pm2 start server/index.js --name masjavas
 pm2 save
 ```
 
-Nginx reverse proxy (opsional):
+Gunakan template Nginx: `deploy/nginx/masjavas.conf`
+
+```bash
+sudo cp deploy/nginx/masjavas.conf /etc/nginx/sites-available/masjavas
+sudo ln -s /etc/nginx/sites-available/masjavas /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot --nginx -d film.example.com
+```
+
+Contoh inline:
 
 ```nginx
 server {

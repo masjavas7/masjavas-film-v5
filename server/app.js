@@ -11,8 +11,13 @@ import exportRoutes from './routes/exportRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import debugRoutes from './routes/debugRoutes.js';
 import ttsRoutes from './routes/ttsRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
 import requestLogger from './middleware/requestLogger.js';
+import securityHeaders from './middleware/securityHeaders.js';
+import { rateLimiter } from './middleware/rateLimiter.js';
+import { getMetricsSnapshot } from './utils/metrics.js';
+import { getErrorStats, getRecentErrors } from './utils/errorTracker.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
@@ -28,7 +33,9 @@ export function createApp(runtimeConfig = {}) {
 
   const app = express();
   app.set('trust proxy', 1);
+  app.use(securityHeaders);
   app.use(requestLogger);
+  app.use('/api', rateLimiter({ max: Number(process.env.RATE_LIMIT_MAX) || 180 }));
 
   // CORS dinamis: mengizinkan Electron (yang mungkin mengirim origin kosong atau file://)
   app.use(cors({
@@ -62,6 +69,19 @@ export function createApp(runtimeConfig = {}) {
   app.get('/healthz', healthHandler);
   app.get('/api/health', healthHandler);
 
+  app.get('/api/metrics', (req, res) => {
+    res.json({
+      status: 'ok',
+      ...getMetricsSnapshot(),
+      errors: getErrorStats()
+    });
+  });
+
+  app.get('/api/monitoring/errors', (req, res) => {
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+    res.json({ success: true, errors: getRecentErrors(limit) });
+  });
+
   // Production / Docker: serve built frontend
   if (process.env.SERVE_STATIC === 'true') {
     const distDir = path.join(projectRoot, 'dist');
@@ -80,6 +100,7 @@ export function createApp(runtimeConfig = {}) {
   app.use('/api', referenceRoutes);
   app.use('/api', sceneRoutes);
   app.use('/api', ttsRoutes);
+  app.use('/api', aiRoutes);
 
   // Global safe error handler
   app.use(errorHandler);

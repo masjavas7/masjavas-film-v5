@@ -1,9 +1,11 @@
 import * as React from "react";
-import { Send } from "lucide-react";
+import { Send, Sparkles } from "lucide-react";
 import { Card } from "../components/ui/Card";
 import { PrimaryButton } from "../components/ui/Button";
 import { ScreenHeader } from "../components/layout/ScreenHeader";
 import { ChatBubble, Tip } from "../components/shared/PrimitiveBlocks";
+import { sendAssistantChat } from "../services/aiFeaturesService";
+import { useProjectLibraryStore } from "../stores/projectLibraryStore";
 
 interface Message {
   id: string;
@@ -12,15 +14,19 @@ interface Message {
 }
 
 export const AssistantPage: React.FC = () => {
+  const activeProjectId = useProjectLibraryStore((s) => s.activeProjectId);
   const [messages, setMessages] = React.useState<Message[]>([
-    { id: "1", who: "AI", text: "Halo! Saya asisten MASJAVAS AI. Ada yang bisa saya bantu untuk proyek video sinematik kamu?" },
-    { id: "2", who: "User", text: "Saya bingung di bagian referensi." },
-    { id: "3", who: "AI", text: "Untuk pemula, kamu cukup klik lanjut. Sistem sudah membuat referensi otomatis berdasarkan ide dan jalan cerita kamu. Upload manual hanya jika ingin memakai gambar sendiri." }
+    {
+      id: "1",
+      who: "AI",
+      text: "Halo! Saya asisten MASJAVAS AI. Tanya rekomendasi proyek, ringkasan film, genre, atau ketik: cari legenda jawa"
+    }
   ]);
   const [inputValue, setInputValue] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
+  const handleSend = async () => {
+    if (!inputValue.trim() || loading) return;
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -29,44 +35,52 @@ export const AssistantPage: React.FC = () => {
     };
 
     setMessages((prev) => [...prev, userMsg]);
+    const sent = inputValue;
     setInputValue("");
+    setLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponseText =
-        inputValue.toLowerCase().includes("storyboard")
-          ? "Storyboard dibuat otomatis untuk membantumu memvisualisasikan adegan per detik. Kamu bisa melihat aksi, dialog, sfx, dan shot size di setiap panelnya sebelum membuat video."
-          : "Tentu, terus ikuti petunjuk visual di layar. MASJAVAS AI dirancang agar semua bagian teknis diurus di belakang layar, sehingga kamu tinggal mereview hasilnya.";
-
+    try {
+      const data = await sendAssistantChat(sent, activeProjectId);
       const aiMsg: Message = {
         id: `ai-${Date.now()}`,
         who: "AI",
-        text: aiResponseText
+        text: data.reply || "Tidak ada respons."
       };
       setMessages((prev) => [...prev, aiMsg]);
-    }, 1000);
-  };
-
-  const handleQuickAction = () => {
-    alert("Saran AI diterapkan!");
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `ai-err-${Date.now()}`,
+          who: "AI",
+          text: "Server tidak tersedia. Pastikan backend berjalan di port 3000."
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div>
       <ScreenHeader
         badge="Bantuan AI"
-        title="Asisten menjawab dengan bahasa sederhana"
-        desc="Asisten memberi saran berikutnya, menjelaskan masalah tanpa istilah teknis, dan menawarkan tombol tindakan."
-        cta="Tanya asisten"
-        onNext={handleQuickAction}
+        title="Asisten produksi film"
+        desc="Rekomendasi proyek, pencarian natural language, ringkasan & klasifikasi genre."
+        cta="Kirim pesan"
+        onNext={handleSend}
       />
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <Card className="bg-white/[0.05]">
-          <h3 className="text-xl font-semibold text-white">Saran saat ini</h3>
+          <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-cyan-400" />
+            Perintah cepat
+          </h3>
           <div className="mt-5 space-y-3">
-            <Tip text="Ide kamu sudah cukup. Lanjut pilih gaya video." />
-            <Tip text="Referensi otomatis sudah siap, upload manual bisa dilewati." />
-            <Tip text="Setiap scene punya panel lengkap sebelum generate video." />
+            <Tip text='Ketik: "rekomendasi proyek"' />
+            <Tip text='Ketik: "ringkas film ini"' (butuh proyek aktif) />
+            <Tip text='Ketik: "cari legenda jawa"' />
+            <Tip text='Ketik: "klasifikasi genre"' />
           </div>
         </Card>
         <Card className="bg-white/[0.05] flex flex-col min-h-[450px]">
@@ -78,15 +92,15 @@ export const AssistantPage: React.FC = () => {
           </div>
           <div className="flex gap-2 mt-auto pt-4 border-t border-white/10">
             <input
-              type="text"
-              placeholder="Tanyakan sesuatu ke asisten AI..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="flex-1 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none text-slate-200 placeholder:text-slate-600 focus:border-blue-500/50 transition"
+              placeholder="Tulis pertanyaan..."
+              className="flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white outline-none focus:border-cyan-500/40"
+              disabled={loading}
             />
-            <PrimaryButton icon={Send} onClick={handleSend} className="px-4 py-3">
-              Kirim
+            <PrimaryButton icon={Send} onClick={handleSend} disabled={loading}>
+              {loading ? "..." : "Kirim"}
             </PrimaryButton>
           </div>
         </Card>

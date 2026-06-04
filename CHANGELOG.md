@@ -1,49 +1,30 @@
 # Changelog
 
-Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-
-## [1.0.0] - 2026-06-04 — Masjavas Film V5 Stable
+## [1.1.0] - 2026-06-04 — Production Ready
 
 ### Added
 
-- Monitoring: `GET /health` dengan `status`, `database`, `version`, `uptimeSec`
-- `server/utils/healthCheck.js`, `server/utils/version.js`, `server/middleware/requestLogger.js`
-- Testing: Vitest + Supertest (`tests/unit`, `tests/api`, `tests/integration`)
-- CI/CD: `.github/workflows/build.yml`, `release.yml`
-- Docker: `Dockerfile`, `docker-compose.yml`, `.dockerignore`
-- Dokumentasi: `SECURITY_AUDIT.md`, `docs/CODEBASE_ANALYSIS.md`, `BUG_REPORT.md`, `PERFORMANCE_REPORT.md`, `TEST_REPORT.md`, `DEPLOYMENT_GUIDE.md`
-- `server/config.json.example`, `.env.production.example`
-- Production start: `npm start` (`SERVE_STATIC=true`)
+- **AI Features:** rekomendasi proyek, pencarian NL (`cari:`), ringkasan film, klasifikasi genre, chat asisten (`/api/ai/*`)
+- Monitoring: `/api/metrics`, `/api/monitoring/errors`, error log file
+- Security: rate limiter, security headers, error tracker
+- Tests: AI, rate limiter, E2E API flow; coverage threshold 80% (modul inti)
+- SEO: meta OG/Twitter, JSON-LD, `robots.txt`, `sitemap.xml`
+- Deploy: `deploy/nginx/masjavas.conf`, `deploy/ecosystem.config.cjs`
+- Docs: `API_DOCUMENTATION.md`, `SYSTEM_ARCHITECTURE.md`, `AI_FEATURES.md`, `MONETIZATION_PLAN.md`, `PROJECT_COMPLETION_REPORT.md`, dan laporan CI/Docker/SEO/Monitoring
 
 ### Changed
 
-- Frontend: lazy-loaded routes (code splitting)
-- `projectRepository.listProjects`: cache 5 detik + invalidasi on save
-- Static assets: cache headers di production
-- `lint` script: TypeScript check (`tsc --noEmit`)
-- Preview video: `preload="metadata"`, `playsInline`
+- Version 1.1.0; Assistant & Library terintegrasi API AI
+- Vite manual chunks (vendor, ui)
+- CI: `test:coverage` dengan env test
 
 ### Security
 
-- Audit lengkap (`SECURITY_AUDIT.md`)
-- Sanitasi `server/config.json` lokal
-- Scratch scripts: env-only API keys
-- Debug routes: localhost-only (unchanged, documented)
+- Audit ulang; sanitasi config lokal; redaksi laporan RC1
 
-### Fixed
+## [1.0.0] - 2026-06-04 — Stable
 
-- Health contract sesuai spesifikasi monitoring
-- Env loader: tidak exit di mode test/desktop tanpa key
+Rilis awal desktop + API + Docker + dokumentasi dasar.
 
-## [1.0.1] - 2026-06-04 (pre-stable housekeeping)
-
-### Added
-
-- README, INSTALLATION, LICENSE MIT, docs/FFMPEG_SETUP.md
-
-### Security
-
-- Removed exposed API key files from repo
-- Multer image validation, debug route hardening
-
+[1.1.0]: https://github.com/masjavas7/masjavas-film-v5/releases/tag/v1.1.0
 [1.0.0]: https://github.com/masjavas7/masjavas-film-v5/releases/tag/v1.0.0

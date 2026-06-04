@@ -10,8 +10,10 @@ import {
   AlertTriangle,
   Plus,
   ArrowUpDown,
-  ShieldCheck
+  ShieldCheck,
+  Sparkles
 } from "lucide-react";
+import { fetchRecommendations, searchProjectsNatural } from "../services/aiFeaturesService";
 import { Card, Pill } from "../components/ui/Card";
 import { PrimaryButton } from "../components/ui/Button";
 import { ScreenHeader } from "../components/layout/ScreenHeader";
@@ -34,10 +36,31 @@ export const LibraryPage: React.FC = () => {
   const [hasBackupAvailable, setHasBackupAvailable] = React.useState<boolean>(false);
   const [projectToRestore, setProjectToRestore] = React.useState<string | null>(null);
   const [backupTimeStr, setBackupTimeStr] = React.useState<string | null>(null);
+  const [aiRecommendations, setAiRecommendations] = React.useState<any[]>([]);
+  const [aiSearchIds, setAiSearchIds] = React.useState<string[] | null>(null);
 
   React.useEffect(() => {
     loadProjects();
+    fetchRecommendations(3)
+      .then((r) => setAiRecommendations(r.recommendations || []))
+      .catch(() => setAiRecommendations([]));
   }, []);
+
+  React.useEffect(() => {
+    const q = searchQuery.trim();
+    if (!q.toLowerCase().startsWith("cari:")) {
+      setAiSearchIds(null);
+      return;
+    }
+    const term = q.slice(5).trim();
+    if (term.length < 2) return;
+    const t = setTimeout(() => {
+      searchProjectsNatural(term)
+        .then((r) => setAiSearchIds((r.results || []).map((x: any) => x.id)))
+        .catch(() => setAiSearchIds(null));
+    }, 400);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   const handleCreateNew = () => {
     resetProject();
@@ -149,8 +172,10 @@ export const LibraryPage: React.FC = () => {
   const processedProjects = React.useMemo(() => {
     let result = [...projects];
 
-    // Search query filtering
-    if (searchQuery.trim().length > 0) {
+    // AI natural language search: prefix "cari: legenda jawa"
+    if (aiSearchIds) {
+      result = result.filter((p) => aiSearchIds.includes(p.id));
+    } else if (searchQuery.trim().length > 0 && !searchQuery.toLowerCase().startsWith("cari:")) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (p) =>
@@ -177,7 +202,7 @@ export const LibraryPage: React.FC = () => {
     });
 
     return result;
-  }, [projects, searchQuery, statusFilter, sortBy]);
+  }, [projects, searchQuery, statusFilter, sortBy, aiSearchIds]);
 
   return (
     <div className="space-y-6 flex-1 flex flex-col">
@@ -249,6 +274,26 @@ export const LibraryPage: React.FC = () => {
         </div>
       )}
 
+      {aiRecommendations.length > 0 && (
+        <Card className="bg-cyan-500/5 border-cyan-500/15 p-4">
+          <h4 className="text-sm font-semibold text-white flex items-center gap-2 mb-3">
+            <Sparkles className="h-4 w-4 text-cyan-400" />
+            Rekomendasi AI — lanjutkan proyek ini
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {aiRecommendations.map((rec) => (
+              <button
+                key={rec.id}
+                onClick={() => handleContinue(rec.id)}
+                className="px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] border border-white/10 hover:border-cyan-500/30 text-slate-200 transition"
+              >
+                {rec.title} · {rec.genre || "Film"}
+              </button>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {/* Control Bar: Search & Filters */}
       <Card className="bg-white/[0.04] p-4 border-white/5 space-y-4 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4">
         {/* Search Input */}
@@ -256,7 +301,7 @@ export const LibraryPage: React.FC = () => {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
           <input
             type="text"
-            placeholder="Cari proyek berdasarkan judul..."
+            placeholder='Judul atau "cari: legenda jawa" (AI)...'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-xl border border-white/10 bg-black/35 pl-10 pr-4 py-2.5 text-sm text-slate-200 outline-none placeholder:text-slate-650 focus:border-blue-500/50 transition focus:ring-1 focus:ring-blue-500/10"

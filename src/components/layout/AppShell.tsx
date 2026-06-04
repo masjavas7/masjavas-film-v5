@@ -208,7 +208,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
                 </div>
               )}
 
-              <GhostButton icon={HelpCircle}>Bantuan</GhostButton>
+              <GhostButton icon={HelpCircle} onClick={() => navigate("/assistant")}>Bantuan</GhostButton>
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-400 text-sm font-bold text-slate-950">
                 MJ
               </div>

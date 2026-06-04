@@ -1,4 +1,4 @@
-# MASJAVAS Film V5
+# MASJAVAS Film V5 — Production Ready v1.1.0
 
 Aplikasi desktop **AI cinematic video production** untuk membuat film pendek berbasis adegan: dari ide, referensi visual, persiapan audio (TTS), komposer adegan, storyboard, preview, hingga ekspor video final dengan FFmpeg.
 

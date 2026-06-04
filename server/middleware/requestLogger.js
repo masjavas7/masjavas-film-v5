@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getRuntimePaths } from '../utils/runtimePaths.js';
+import { incrementRequests } from '../utils/metrics.js';
 
 function appendAccessLog(line) {
   try {
@@ -17,6 +18,7 @@ function appendAccessLog(line) {
  */
 export function requestLogger(req, res, next) {
   const start = Date.now();
+  incrementRequests();
 
   res.on('finish', () => {
     const ms = Date.now() - start;
