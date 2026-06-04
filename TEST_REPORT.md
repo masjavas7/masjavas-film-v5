@@ -1,41 +1,32 @@
-# Test Report — MASJAVAS Film V5 v1.0.0
+# Test Report — v1.1.0
 
-## Framework
+## Suites (10 files)
 
-- **Runner:** Vitest 2.x
-- **API tests:** Supertest
-- **Lokasi:** `tests/`
+| Path | Type |
+|------|------|
+| `tests/unit/safeError.test.js` | Unit |
+| `tests/unit/healthCheck.test.js` | Unit |
+| `tests/unit/aiFeaturesService.test.js` | Unit |
+| `tests/unit/rateLimiter.test.js` | Unit |
+| `tests/unit/localOnly.test.js` | Unit |
+| `tests/integration/projectRepository.test.js` | Integration |
+| `tests/api/health.test.js` | API |
+| `tests/api/ai.test.js` | API |
+| `tests/e2e/api-flow.test.js` | E2E |
 
-## Suite
-
-| File | Tipe | Cakupan |
-|------|------|---------|
-| `tests/unit/safeError.test.js` | Unit | Error sanitization |
-| `tests/unit/healthCheck.test.js` | Unit | Health payload |
-| `tests/api/health.test.js` | API | `/health`, `/api/health` |
-| `tests/integration/projectRepository.test.js` | Integration | JSON storage + cache |
-
-## Menjalankan
+## Commands
 
 ```bash
-npm install
 npm run test
 npm run test:coverage
 ```
 
-## Target coverage
+## Coverage target
 
-| Target | Status v1.0.0 |
-|--------|----------------|
-| 80%+ global | **Not met** (fokus modul inti) |
-| Core utils/middleware | ~85% pada file yang di-include |
+**80%+** on: `server/utils/**`, `server/middleware/**`, `aiFeaturesService.js`, `projectRepository.js`
 
-Coverage sengaja dibatasi ke modul stabil (`vitest.config.js`). Perluasan ke `sceneService`, `grokpiClient` direncanakan v1.1.
+Enforced in `vitest.config.js` thresholds.
 
 ## CI
 
-GitHub Actions `build.yml` menjalankan `npm run test` pada setiap push ke `main`.
-
-## Hasil terakhir (lokal)
-
-Jalankan `npm run test` setelah `npm install` untuk angka aktual. Exit code 0 diharapkan di Node 20+.
+`build.yml` runs `npm run test:coverage` on every push to `main`.

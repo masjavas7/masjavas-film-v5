@@ -1,137 +1,130 @@
-# Codebase Analysis — MASJAVAS Film V5
+# Codebase Analysis — MASJAVAS Film V5 v1.1.0
 
-## Teknologi
+## Executive summary
 
-| Lapisan | Stack |
-|---------|--------|
-| Frontend | React 18, TypeScript 5, Vite 5, Tailwind 3, Zustand, React Router 6 (HashRouter) |
-| Desktop | Electron 42, electron-builder (NSIS) |
-| Backend | Node.js 20+, Express 5, Multer |
-| Storage | File JSON (`server/data/projects/`), localStorage cache |
-| Media | FFmpeg (lokal), static `/uploads`, `/exports` |
-| AI | GrokPI REST, Gemini TTS |
+Production-grade **hybrid Electron + Express + React** application for AI-assisted cinematic video production. Storage is file-based JSON (no SQL). External AI via GrokPI and Gemini TTS.
 
-## Struktur folder
+## Technology stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18, TypeScript, Vite 5, Tailwind 3, Zustand, HashRouter |
+| Desktop | Electron 42, electron-builder |
+| Backend | Node 20+, Express 5, Multer |
+| Testing | Vitest, Supertest |
+| CI/CD | GitHub Actions |
+| Container | Docker, docker-compose |
+
+## Project structure
 
 ```
-masjavas-film-v5/
-├── src/                 # React UI
-│   ├── pages/           # 14 layar alur produksi
-│   ├── components/      # layout, UI, shared
-│   ├── stores/          # Zustand state
-│   ├── services/        # API clients
-│   └── types/
-├── server/              # Express API
-│   ├── routes/
-│   ├── services/        # domain logic
-│   ├── middleware/
-│   └── utils/
-├── desktop/             # Electron shell
-├── tests/               # Vitest
-├── docs/
-├── resources/           # icons, ffmpeg (lokal)
-└── .github/workflows/
+src/           → UI pages, stores, services
+server/        → API, domain services, middleware
+desktop/       → Electron lifecycle
+tests/         → unit, api, integration, e2e
+deploy/        → nginx, PM2
+docs/          → analysis, FFmpeg setup
+public/        → SEO assets
+.github/       → workflows
 ```
 
 ## Database
 
-Tidak ada SQL. **Project store** = satu file JSON per proyek:
+**None (SQL).** Persistence:
 
-- Dev: `server/data/projects/{id}.json`
+- `server/data/projects/{id}.json` (+ `.backup.json`)
 - Desktop: `%APPDATA%/MASJAVAS AI/data/projects/`
+- Browser: `localStorage` cache offline
 
-Operasi via `projectRepository.js` (list, get, save snapshot, backup `.backup.json`).
+`projectRepository.js` — CRUD + list cache (5s TTL).
 
-## API eksternal
+## External APIs
 
-| Provider | Penggunaan |
-|----------|------------|
-| GrokPI | Storyboard, image, video generation |
-| Gemini | TTS / audio narasi |
-| FFmpeg | Merge, transcode, export MP4 |
+| API | Usage |
+|-----|--------|
+| GrokPI | Images, video generation |
+| Gemini | TTS narration |
+| FFmpeg | Export/transcode (local binary) |
 
-## API internal (Express)
+## Build system
 
-| Prefix | Modul |
-|--------|--------|
-| `GET /health` | Monitoring |
-| `/api/projects` | CRUD proyek |
-| `/api/.../references` | Upload & auto refs |
-| `/api/scenes` | Adegan, render queue |
-| `/api/export` | Kompilasi final |
-| `/api/tts` | Audio per adegan |
-| `/api/settings` | Kunci API (AppData) |
-| `/api/debug/*` | Diagnostics (localhost only) |
+| Command | Output |
+|---------|--------|
+| `npm run dev` | Vite :5174 |
+| `npm run build` | `dist/` |
+| `npm run desktop:build` | `release/*.exe` |
+| `npm start` | API + static SPA :3000 |
 
-## Alur aplikasi
+## Deployment process
 
-```mermaid
-flowchart LR
-  Home --> Start --> Idea --> Presets
-  Presets --> References --> Review
-  Review --> AudioPrep --> Scenes
-  Scenes --> SceneComposer
-  SceneComposer --> Preview --> Export
-  Library --> Home
-  Settings --> Home
-```
+1. Dev: `npm run dev:all`
+2. Docker: `docker compose up -d`
+3. VPS: PM2 + Nginx + SSL (`deploy/`)
+4. CI: push → test → build; tag → release
 
-1. User membuat/membuka proyek (Library / Start)
-2. Mengisi ide, preset, referensi visual
-3. Review & kompresi narasi
-4. TTS per adegan (Audio Prep)
-5. Generate storyboard + video per adegan
-6. Preview urutan adegan
-7. Export MP4 + SRT + paket edit
+## Security risks (mitigated v1.1)
 
-## Dependency utama
+| Risk | Mitigation |
+|------|------------|
+| API keys in repo | `.gitignore`, env-only, audit |
+| Open debug routes | `localOnly` middleware |
+| Upload abuse | MIME filter, 10MB, rate limit |
+| CORS wide open | OK for local; restrict at Nginx in prod |
 
-- `react`, `react-dom`, `react-router-dom`
-- `zustand`, `lucide-react`, `clsx`, `tailwind-merge`
-- `express`, `cors`, `multer`, `dotenv`
-- `electron`, `electron-builder` (dev)
-- `vitest`, `supertest` (dev)
+## Technical debt
 
-## Diagram relasi modul
+| Item | Priority |
+|------|----------|
+| No SQL multi-tenant | Medium — file JSON OK until 10k+ projects/server |
+| AI chat heuristic (not LLM) | Low — upgrade path documented |
+| FFmpeg not in Git | By design — `docs/FFMPEG_SETUP.md` |
+| Lighthouse not in CI | Low — manual/scheduled audit |
+
+## Architecture diagram
 
 ```mermaid
 flowchart TB
-  subgraph Client
-    Pages[src/pages]
-    Stores[src/stores]
-    Svc[src/services]
+  subgraph Presentation
+    R[React SPA]
+    E[Electron Shell]
   end
-  subgraph Electron
-    Main[desktop/main.js]
-    Launcher[serverLauncher.js]
-  end
-  subgraph API
-    App[server/app.js]
-    Routes[server/routes]
-    Domain[server/services]
-    Repo[projectRepository]
-  end
-  subgraph External
-    GrokPI[grokpiClient]
-    TTS[ttsService]
+  subgraph Application
+    API[Express API]
+    AI[aiFeaturesService]
+    PR[projectRepository]
+    GK[grokpiClient]
+    TS[ttsService]
     FF[ffmpegService]
   end
-  Pages --> Stores
-  Pages --> Svc
-  Svc --> App
-  Main --> Launcher
-  Launcher --> App
-  App --> Routes --> Domain
-  Domain --> Repo
-  Domain --> GrokPI
-  Domain --> TTS
-  Domain --> FF
+  subgraph Data
+    J[(JSON Projects)]
+    U[uploads/]
+    X[exports/]
+  end
+  R --> API
+  E --> API
+  API --> AI
+  API --> PR --> J
+  API --> GK
+  API --> TS
+  API --> FF
+  API --> U
+  API --> X
 ```
 
-## Mode runtime
+## Module dependency (core)
 
-| Mode | Frontend | Backend |
-|------|----------|---------|
-| `npm run dev:all` | Vite :5174 | Express :3000 |
-| `npm run desktop:dev` | Vite + Electron | Embedded server |
-| Docker / `npm start` | Static `dist/` | Express + SERVE_STATIC |
+```mermaid
+flowchart LR
+  Routes --> Services
+  Services --> projectRepository
+  Services --> grokpiClient
+  aiRoutes --> aiFeaturesService --> projectRepository
+```
+
+## v1.1 additions
+
+- `/api/ai/*` — recommendations, search, summary, genre, chat
+- `/api/metrics`, `/api/monitoring/errors`
+- Rate limiting + security headers + error tracking
+- 8+ test files, 80% coverage threshold on core server modules
