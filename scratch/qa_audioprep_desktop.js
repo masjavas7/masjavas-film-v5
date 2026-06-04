@@ -66,7 +66,7 @@ async function main() {
   const qaConfig = {
     apiKey: actualSettings.apiKey || process.env.GROKPI_API_KEY || '',
     apiBaseUrl: actualSettings.apiBaseUrl || 'https://www.grokpi.masjavas.my.id/v1',
-    geminiApiKey: actualSettings.geminiApiKey || process.env.GEMINI_API_KEY || 'dummy_key',
+    geminiApiKey: actualSettings.geminiApiKey || process.env.GEMINI_API_KEY || '',
     geminiBaseUrl: actualSettings.geminiBaseUrl || 'https://generativelanguage.googleapis.com',
     storyboardDelaySec: actualSettings.storyboardDelaySec || 15
   };

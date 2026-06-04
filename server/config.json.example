@@ -1,0 +1,7 @@
+{
+  "apiKey": "",
+  "apiBaseUrl": "https://www.grokpi.masjavas.my.id/v1",
+  "geminiApiKey": "",
+  "geminiBaseUrl": "https://generativelanguage.googleapis.com",
+  "storyboardDelaySec": 15
+}

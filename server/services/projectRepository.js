@@ -5,6 +5,13 @@ import { getRuntimePaths } from '../utils/runtimePaths.js';
 
 const getProjectsDir = () => getRuntimePaths().projectsDir;
 
+const LIST_CACHE_TTL_MS = 5000;
+let listProjectsCache = { data: null, expiresAt: 0 };
+
+export function invalidateProjectListCache() {
+  listProjectsCache = { data: null, expiresAt: 0 };
+}
+
 // Helper to ensure the database directory exists
 function ensureProjectsDir() {
   if (!fs.existsSync(getProjectsDir())) {
@@ -19,6 +26,11 @@ export const projectRepository = {
    * @returns {Array<object>} list of projects with metadata, sorted by lastOpenedAt/updatedAt desc
    */
   listProjects: () => {
+    const now = Date.now();
+    if (listProjectsCache.data && listProjectsCache.expiresAt > now) {
+      return listProjectsCache.data;
+    }
+
     ensureProjectsDir();
     try {
       const files = fs.readdirSync(getProjectsDir()).filter(f => f.endsWith('.json') && !f.endsWith('.backup.json'));
@@ -52,7 +64,9 @@ export const projectRepository = {
       }
 
       // Sort by lastOpenedAt descending
-      return projects.sort((a, b) => new Date(b.lastOpenedAt).getTime() - new Date(a.lastOpenedAt).getTime());
+      const sorted = projects.sort((a, b) => new Date(b.lastOpenedAt).getTime() - new Date(a.lastOpenedAt).getTime());
+      listProjectsCache = { data: sorted, expiresAt: Date.now() + LIST_CACHE_TTL_MS };
+      return sorted;
     } catch (err) {
       console.error('[ProjectRepository] listProjects failed:', err);
       return [];
@@ -159,6 +173,7 @@ export const projectRepository = {
     const filePath = path.join(getProjectsDir(), `${projectId}.json`);
     try {
       fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), 'utf8');
+      invalidateProjectListCache();
       return updated;
     } catch (err) {
       console.error(`[ProjectRepository] updateProject failed for ${projectId}:`, err);
@@ -212,6 +227,7 @@ export const projectRepository = {
 
     try {
       fs.writeFileSync(filePath, JSON.stringify(merged, null, 2), 'utf8');
+      invalidateProjectListCache();
       console.log(`[ProjectRepository] Snapshot saved successfully for project ${projectId}`);
       return merged;
     } catch (err) {

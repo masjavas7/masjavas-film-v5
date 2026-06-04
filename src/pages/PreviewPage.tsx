@@ -171,6 +171,8 @@ export const PreviewPage: React.FC = () => {
                   className="w-full h-full object-cover"
                   controls={false}
                   autoPlay={isPlaying}
+                  preload="metadata"
+                  playsInline
                   onEnded={handleVideoEnded}
                 />
 

@@ -40,7 +40,7 @@
 | Field | Value |
 |-------|-------|
 | baseUrl | `https://www.grokpi.masjavas.my.id/v1` |
-| hasApiKey | ✅ YES (`gf-••••••••17a9`) |
+| hasApiKey | ✅ YES (masked — configure via Settings / env) |
 | testConnection | ✅ **SUCCESS** |
 | responseTimeMs | **195ms** |
 | imageGeneration | ✅ **SUCCESS** (3 reference images generated successfully in QA stage 1) |

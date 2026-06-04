@@ -11,8 +11,10 @@ const GROKPI_API_KEY = process.env.GROKPI_API_KEY;
 
 const isDesktop = !!(process.versions && process.versions.electron) || process.env.MASJAVAS_DESKTOP === 'true';
 
+const isTest = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
+
 if (!GROKPI_API_KEY) {
-  if (isDesktop) {
+  if (isDesktop || isTest) {
     console.warn('[env] Warning: GROKPI_API_KEY is not defined. User must configure it in Settings.');
   } else {
     console.error('Missing GROKPI_API_KEY in server environment.');

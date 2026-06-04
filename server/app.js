@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { initRuntimePaths } from './utils/runtimePaths.js';
+import { buildHealthPayload } from './utils/healthCheck.js';
 import projectRoutes from './routes/projectRoutes.js';
 import referenceRoutes from './routes/referenceRoutes.js';
 import sceneRoutes from './routes/sceneRoutes.js';
@@ -9,6 +12,10 @@ import settingsRoutes from './routes/settingsRoutes.js';
 import debugRoutes from './routes/debugRoutes.js';
 import ttsRoutes from './routes/ttsRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
+import requestLogger from './middleware/requestLogger.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(__dirname, '..');
 
 /**
  * Membuat dan mengonfigurasi instansi Express.
@@ -20,6 +27,8 @@ export function createApp(runtimeConfig = {}) {
   const runtimePaths = initRuntimePaths(runtimeConfig.userDataDir);
 
   const app = express();
+  app.set('trust proxy', 1);
+  app.use(requestLogger);
 
   // CORS dinamis: mengizinkan Electron (yang mungkin mengirim origin kosong atau file://)
   app.use(cors({
@@ -34,19 +43,34 @@ export function createApp(runtimeConfig = {}) {
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
-  // static resources pointing to dynamically resolved runtime directories
-  app.use('/uploads', express.static(runtimePaths.uploadsDir));
-  app.use('/exports', express.static(runtimePaths.exportsDir));
+  const staticCache = { maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0 };
 
-  // Health checks
-  app.get('/health', (req, res) => res.json({ status: 'ok', service: 'MASJAVAS AI API Gateway' }));
-  app.get('/healthz', (req, res) => res.json({ status: 'ok', service: 'MASJAVAS AI API Gateway' }));
-  app.get('/api/health', (req, res) => res.json({
-    "status": "ok",
-    "service": "masjavas-backend-proxy",
-    "mode": runtimeConfig.userDataDir ? "desktop" : "dev",
-    "port": runtimeConfig.port || 3000
-  }));
+  // static resources pointing to dynamically resolved runtime directories
+  app.use('/uploads', express.static(runtimePaths.uploadsDir, staticCache));
+  app.use('/exports', express.static(runtimePaths.exportsDir, staticCache));
+
+  const healthHandler = (req, res) => {
+    res.json(buildHealthPayload({
+      mode: runtimeConfig.userDataDir ? 'desktop' : (process.env.NODE_ENV || 'dev'),
+      port: runtimeConfig.port || Number(process.env.PORT) || 3000,
+      uptimeSec: Math.floor(process.uptime())
+    }));
+  };
+
+  // Health checks (monitoring / uptime)
+  app.get('/health', healthHandler);
+  app.get('/healthz', healthHandler);
+  app.get('/api/health', healthHandler);
+
+  // Production / Docker: serve built frontend
+  if (process.env.SERVE_STATIC === 'true') {
+    const distDir = path.join(projectRoot, 'dist');
+    app.use(express.static(distDir, { maxAge: '1d', index: false }));
+    app.get(/^(?!\/api|\/uploads|\/exports|\/health).*/, (req, res, next) => {
+      if (req.method !== 'GET') return next();
+      res.sendFile(path.join(distDir, 'index.html'));
+    });
+  }
 
   // Mount modular routes
   app.use('/api', settingsRoutes);

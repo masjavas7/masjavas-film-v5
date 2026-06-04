@@ -1,0 +1,16 @@
+node_modules
+dist
+release
+.git
+.env
+.env.*
+server/.env
+server/config.json
+server/uploads
+server/exports
+server/temp
+server/logs
+scratch
+resources/ffmpeg
+*.log
+agent-tools

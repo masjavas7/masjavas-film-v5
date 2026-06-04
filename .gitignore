@@ -35,10 +35,16 @@ docs/**/*secret*
 .env.local
 .env.development.local
 .env.test.local
+.env.production
 .env.production.local
 server/.env
 server/.env.local
 server/config.json
+backup/
+**/logs/
+*.pem
+*.key
+credentials.json
 
 # Server runtime data
 server/uploads/

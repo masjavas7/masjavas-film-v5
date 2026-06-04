@@ -1,6 +1,9 @@
 {
   "name": "masjavas-film-v5",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=20"
+  },
   "description": "MASJAVAS Film V5 — desktop AI cinematic video production (React + Electron + Express)",
   "private": true,
   "repository": {
@@ -13,9 +16,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "tsc --noEmit",
+    "test": "cross-env VITEST=true NODE_ENV=test vitest run",
+    "test:watch": "cross-env VITEST=true NODE_ENV=test vitest",
+    "test:coverage": "cross-env VITEST=true NODE_ENV=test vitest run --coverage",
     "preview": "vite preview",
     "server": "node server/index.js",
+    "start": "cross-env SERVE_STATIC=true NODE_ENV=production node server/index.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
     "desktop:dev": "concurrently \"npm run server\" \"npm run dev\" \"wait-on http://localhost:5174 http://localhost:3000/api/health && cross-env MASJAVAS_DESKTOP=true electron desktop/main.js\"",
     "desktop:build": "npm run build && electron-builder",
@@ -48,7 +55,10 @@
     "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.11",
-    "wait-on": "^9.0.10"
+    "wait-on": "^9.0.10",
+    "@vitest/coverage-v8": "^2.1.9",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.9"
   },
   "build": {
     "appId": "com.masjavas.ai",
