@@ -78,7 +78,7 @@ export const AssistantPage: React.FC = () => {
           </h3>
           <div className="mt-5 space-y-3">
             <Tip text='Ketik: "rekomendasi proyek"' />
-            <Tip text='Ketik: "ringkas film ini"' (butuh proyek aktif) />
+            <Tip text='Ketik: "ringkas film ini" (butuh proyek aktif)' />
             <Tip text='Ketik: "cari legenda jawa"' />
             <Tip text='Ketik: "klasifikasi genre"' />
           </div>

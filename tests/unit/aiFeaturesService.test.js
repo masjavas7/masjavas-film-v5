@@ -59,4 +59,27 @@ describe('aiFeaturesService', () => {
     const recs = recommendFilms(5);
     expect(Array.isArray(recs)).toBe(true);
   });
+
+  it('assistant handles summary and genre with active project', () => {
+    const summary = assistantReply('ringkas film ini', 'ai-test-1');
+    expect(summary.data?.summary).toBeDefined();
+    const genre = assistantReply('klasifikasi genre', 'ai-test-1');
+    expect(genre.data?.classification?.genre).toBeTruthy();
+  });
+
+  it('assistant prompts when project missing for summary/genre', () => {
+    const noSummary = assistantReply('ringkas film ini');
+    expect(noSummary.reply).toContain('proyek');
+    const noGenre = assistantReply('klasifikasi genre');
+    expect(noGenre.reply).toContain('Pilih proyek');
+  });
+
+  it('assistant handles search and fallback intents', () => {
+    const search = assistantReply('cari legenda jawa');
+    expect(search.data?.results).toBeDefined();
+    const storyboard = assistantReply('bantu storyboard');
+    expect(storyboard.reply).toContain('Storyboard');
+    const fallback = assistantReply('halo');
+    expect(fallback.reply).toContain('rekomendasi');
+  });
 });

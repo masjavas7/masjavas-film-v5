@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.1] - 2026-06-04 — Production Stable (CI/CD Green)
+
+### Fixed
+
+- **CI/CD:** Regenerated `package-lock.json` (sync with `package.json`); `npm ci` succeeds on GitHub Actions
+- **Build:** TypeScript fix in `AssistantPage.tsx` (invalid JSX attribute)
+- **Tests:** 34 tests, coverage ~93% lines on core server modules; thresholds enforced in Vitest
+- **Security:** `esbuild` override; production `npm audit` clean (no high/critical)
+- **Workflows:** CodeQL analysis, Dependabot, Docker build job, production-only audit in CI
+
+### Changed
+
+- Version **1.1.1**; release title *Masjavas Film V5 Production Stable v1.1.1*
+- `npm run typecheck` script alias; CI uses `typecheck` step explicitly
+
+[1.1.1]: https://github.com/masjavas7/masjavas-film-v5/releases/tag/v1.1.1
+
 ## [1.1.0] - 2026-06-04 — Production Ready
 
 ### Added

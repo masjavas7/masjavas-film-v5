@@ -1,6 +1,6 @@
 {
   "name": "masjavas-film-v5",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "engines": {
     "node": ">=20"
   },
@@ -11,12 +11,16 @@
     "url": "https://github.com/masjavas7/masjavas-film-v5.git"
   },
   "license": "MIT",
+  "overrides": {
+    "esbuild": "^0.25.0"
+  },
   "main": "desktop/main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "test": "cross-env VITEST=true NODE_ENV=test vitest run",
     "test:watch": "cross-env VITEST=true NODE_ENV=test vitest",
     "test:coverage": "cross-env VITEST=true NODE_ENV=test vitest run --coverage",
